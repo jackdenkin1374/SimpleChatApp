@@ -34,39 +34,44 @@ public class TransparentWindowRaycast : MonoBehaviour
     [DllImport("user32.dll")]
     static extern bool ShowWindowAsync(IntPtr hWnd, int nCmdShow);
     
-    [DllImport("user32.dll", EntryPoint = "SetLayeredWindowAttributes")]
-    static extern int SetLayeredWindowAttributes(IntPtr hwnd, int crKey, byte bAlpha, int dwFlags);
+    [DllImport("user32.dll")]
+    static extern int SetLayeredWindowAttributes(IntPtr hwnd, uint crKey, byte bAlpha, uint dwFlags);
+    // [DllImport("user32.dll", EntryPoint = "SetLayeredWindowAttributes")]
+    // static extern int SetLayeredWindowAttributes(IntPtr hwnd, int crKey, byte bAlpha, int dwFlags);
     
-    [DllImport("user32.dll", EntryPoint = "SetWindowPos")]
-    private static extern int SetWindowPos(IntPtr hwnd, int hwndInsertAfter, int x, int y, int cx, int cy, int uFlags);
+    [DllImport("user32.dll", SetLastError = true)]
+    static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+    // [DllImport("user32.dll", EntryPoint = "SetWindowPos")]
+    // private static extern int SetWindowPos(IntPtr hwnd, int hwndInsertAfter, int x, int y, int cx, int cy, int uFlags);
     
     [DllImport("Dwmapi.dll")]
     private static extern uint DwmExtendFrameIntoClientArea(IntPtr hWnd, ref MARGINS margins);
     
-    const int GWL_STYLE = -16;
-    const uint WS_POPUP = 0x80000000;
-    const uint WS_VISIBLE = 0x10000000;
-    const int HWND_TOPMOST = -1;
+    const int GWL_STYLE = -20;
+    const uint WS_POPUP = 0x00080000;
+    const uint WS_VISIBLE = 0x00000020;
+    static readonly IntPtr HWND_TOPMOST = new IntPtr(-1);
+    const uint LWA_COLORKEY = 0x00000001;
     
-    int fWidth;
-    int fHeight;
-    IntPtr hwnd;
-    MARGINS margins;
+    // int fWidth;
+    // int fHeight;
+    IntPtr hWnd;
+    // MARGINS margins;
     
     void Start()
     {
         mainCamera = GetComponent<Camera> ();
     
         #if !UNITY_EDITOR // You really don't want to enable this in the editor..
+        hWnd = GetActiveWindow();
+        // fWidth = Screen.width;
+        // fHeight = Screen.height;
+        MARGINS margins = new MARGINS() { cxLeftWidth = -1 };
+        DwmExtendFrameIntoClientArea(hWnd, ref margins);
     
-        fWidth = Screen.width;
-        fHeight = Screen.height;
-        margins = new MARGINS() { cxLeftWidth = -1 };
-        hwnd = GetActiveWindow();
-    
-        SetWindowLong(hwnd, GWL_STYLE, WS_POPUP | WS_VISIBLE);
-        SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, fWidth, fHeight, 32 | 64); //SWP_FRAMECHANGED = 0x0020 (32); //SWP_SHOWWINDOW = 0x0040 (64)
-        DwmExtendFrameIntoClientArea(hwnd, ref margins);
+        SetWindowLong(hWnd, GWL_STYLE, WS_POPUP | WS_VISIBLE);
+        // SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, fWidth, fHeight, 32 | 64); //SWP_FRAMECHANGED = 0x0020 (32); //SWP_SHOWWINDOW = 0x0040 (64)
+        SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, 0);
     
         Application.runInBackground = true;
         #endif
@@ -83,16 +88,19 @@ public class TransparentWindowRaycast : MonoBehaviour
         if (clickThrough != prevClickThrough) {
             if (clickThrough) {
                 #if !UNITY_EDITOR
-                // SetWindowLong(hwnd, GWL_STYLE, WS_POPUP | WS_VISIBLE);
-                SetWindowLong (hwnd, -20, (uint)524288 | (uint)32);//GWL_EXSTYLE=-20; WS_EX_LAYERED=524288=&h80000, WS_EX_TRANSPARENT=32=0x00000020L
-                SetLayeredWindowAttributes (hwnd, 0, 255, 2);// Transparency=51=20%, LWA_ALPHA=2
-                SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, fWidth, fHeight, 32 | 64); //SWP_FRAMECHANGED = 0x0020 (32); //SWP_SHOWWINDOW = 0x0040 (64)
+                SetWindowLong(hWnd, GWL_STYLE, WS_POPUP | WS_VISIBLE);
+                // SetWindowLong (hWnd, -20, (uint)524288 | (uint)32);//GWL_EXSTYLE=-20; WS_EX_LAYERED=524288=&h80000, WS_EX_TRANSPARENT=32=0x00000020L
+                SetLayeredWindowAttributes (hWnd, 0, 255, 2);// Transparency=51=20%, LWA_ALPHA=2
+                // SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, fWidth, fHeight, 32 | 64); //SWP_FRAMECHANGED = 0x0020 (32); //SWP_SHOWWINDOW = 0x0040 (64)
+                SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, 0);
                 #endif
             } else {
                 #if !UNITY_EDITOR
-                // SetWindowLong (hwnd, -20, ~(((uint)524288) | ((uint)32)));//GWL_EXSTYLE=-20; WS_EX_LAYERED=524288=&h80000, WS_EX_TRANSPARENT=32=0x00000020L
-                SetWindowLong (hwnd, -20, WS_POPUP | WS_VISIBLE);
-                SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, fWidth, fHeight, 32 | 64); //SWP_FRAMECHANGED = 0x0020 (32); //SWP_SHOWWINDOW = 0x0040 (64)
+                // SetWindowLong (hWnd, -20, ~(((uint)524288) | ((uint)32)));//GWL_EXSTYLE=-20; WS_EX_LAYERED=524288=&h80000, WS_EX_TRANSPARENT=32=0x00000020L
+                SetWindowLong (hWnd, -20, WS_POPUP | WS_VISIBLE);
+                SetWindowLong (hWnd, -20, WS_POPUP);
+                // SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, fWidth, fHeight, 32 | 64); //SWP_FRAMECHANGED = 0x0020 (32); //SWP_SHOWWINDOW = 0x0040 (64)
+                SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, 0);
                 #endif
             }
             prevClickThrough = clickThrough;
