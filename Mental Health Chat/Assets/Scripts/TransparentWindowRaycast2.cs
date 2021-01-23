@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+// Not in use, does not work
 [RequireComponent (typeof (Camera))]
 public class TransparentWindowRaycast2 : MonoBehaviour {
 

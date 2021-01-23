@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// It works and in use
 public class TransparentWindow : MonoBehaviour {
 
     [DllImport("user32.dll")]
@@ -57,6 +58,8 @@ public class TransparentWindow : MonoBehaviour {
     }
     #endif
     
+    // This determines what is clickable in game, however, have to click twice to properly access the game
+    // 2D colliders work, but probably better to just use 2D Box collider
     private void Update() {
         SetClickthrough(Physics2D.OverlapPoint(UtilsClass.GetMouseWorldPosition()) == null);
     }

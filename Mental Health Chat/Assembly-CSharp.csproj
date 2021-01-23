@@ -43,11 +43,13 @@
      <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleUI.cs" />
      <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleUnityVersion.cs" />
      <Compile Include="Assets\Demigiant\DOTween\Modules\DOTweenModuleUtils.cs" />
-     <Compile Include="Assets\Scripts\ButtonTest.cs" />
      <Compile Include="Assets\Scripts\EditTextFile.cs" />
      <Compile Include="Assets\Scripts\FileUIContainer.cs" />
      <Compile Include="Assets\Scripts\GameManager.cs" />
      <Compile Include="Assets\Scripts\HotkeysManager.cs" />
+     <Compile Include="Assets\Scripts\NPC.cs" />
+     <Compile Include="Assets\Scripts\NodeVisitedTracker.cs" />
+     <Compile Include="Assets\Scripts\SpriteSwitcher.cs" />
      <Compile Include="Assets\Scripts\TabButton.cs" />
      <Compile Include="Assets\Scripts\TabGroup.cs" />
      <Compile Include="Assets\Scripts\TransparentWindow.cs" />
