@@ -47,6 +47,7 @@
      <Compile Include="Assets\Scripts\FileUIContainer.cs" />
      <Compile Include="Assets\Scripts\GameManager.cs" />
      <Compile Include="Assets\Scripts\HotkeysManager.cs" />
+     <Compile Include="Assets\Scripts\ImageChanger.cs" />
      <Compile Include="Assets\Scripts\NPC.cs" />
      <Compile Include="Assets\Scripts\NodeVisitedTracker.cs" />
      <Compile Include="Assets\Scripts\SpriteSwitcher.cs" />

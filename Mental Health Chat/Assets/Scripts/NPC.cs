@@ -1,14 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using Yarn.Unity;
+using Yarn;
 /// attached to the non-player characters, and stores the name of the Yarn
 /// node that should be run when you talk to them.
 public class NPC : MonoBehaviour {
 
     public static NPC Instance { get; set; }
-
     public string characterName = "";
-
     public string talkToNode = "";
 
     [Header("Optional")]
@@ -24,9 +23,9 @@ public class NPC : MonoBehaviour {
         if (scriptToLoad != null) {
             DialogueRunner dialogueRunner = FindObjectOfType<Yarn.Unity.DialogueRunner>();
             dialogueRunner.Add(scriptToLoad);  
-            print(dialogueRunner.CurrentNodeName); 
-            print(dialogueRunner.startNode);      
-            print(dialogueRunner.NodeExists("Shina"));  
+            // print(dialogueRunner.CurrentNodeName); 
+            // print(dialogueRunner.startNode);      
+            // print(dialogueRunner.NodeExists("Shina"));  
         }
     }
 
@@ -37,10 +36,11 @@ public class NPC : MonoBehaviour {
         }
     }
 
-    public void LoadScript2(IDictionary<string, Yarn.Compiler.StringInfo> scriptToLoad){
+    public void LoadScript(Program program, IDictionary<string, Yarn.Compiler.StringInfo> stringInfo){
         if (scriptToLoad != null) {
             DialogueRunner dialogueRunner = FindObjectOfType<Yarn.Unity.DialogueRunner>();
-            dialogueRunner.AddStringTable(scriptToLoad);                
+            dialogueRunner.AddStringTable(stringInfo);          
+            dialogueRunner.Dialogue.AddProgram(program);       
         }
     }
 }

@@ -15,8 +15,7 @@ public class FileUIContainer : MonoBehaviour
     EditTextFile loadManager;
     NPC npc;
 
-    void Start()
-    {
+    void Start(){
         loadManager = EditTextFile.Instance;
     }
 
@@ -37,38 +36,43 @@ public class FileUIContainer : MonoBehaviour
     }
 
     // Method is to be used with GameManager.cs in order to load files for the DialogueRunner
-    // Currently I don't know how to use this CompileFile method, ask the Yarn Spinner Discord on how to load Yarn
-    //  file at runtime to allow custom dialogues by users.
     public void LoadFileToRun(){
         string txtDocumentName = Application.streamingAssetsPath + "/Char_Dialogues/" + file.Name;
         Debug.Log("Loading " + file.Name + " in " + txtDocumentName);
-        // YarnProgram script1;
         Yarn.Program script;
-        IDictionary<string, StringInfo> a;
+        IDictionary<string, StringInfo> dialogueStrings;
         
-        // This method returns the Program, which contains nodes and
-        //  returns the strings
-        Yarn.Compiler.Compiler.CompileFile(txtDocumentName, out script, out a);
-        // Debug.Log(a.Count);
-        // Debug.Log(a.Values.Count);
-        // Debug.Log(a.Keys.Count);
-        foreach(string k in a.Keys){
-            print(k);
-        }
-        foreach(StringInfo k in a.Values){
-            print(k.text);
-        }
+        // This method returns the Program, which contains nodes and returns the strings
+        Yarn.Compiler.Compiler.CompileFile(txtDocumentName, out script, out dialogueStrings);
 
-        // This is able to add the strings but is unable to add the Program object
-        //  I do not see a method that adds in the Program object
-        //  Get the fucking devs to answer the question of how to add in the fucknig nodes.
-        if (a != null) {
+        #region prints for Program and StringInfo
+        // Debug.Log(a.Count);
+        // print("StringInfo");
+        // foreach(string k in a.Keys){
+        //     print(k);
+        // }
+        // foreach(StringInfo k in a.Values){
+        //     print(k.text);
+        // }
+
+        // print("Program");
+        // print(script);
+        // print(script.Nodes.Count);
+        // foreach(string k in script.Nodes.Keys){
+        //     print(k);
+        // }
+        // foreach(Yarn.Node k in script.Nodes.Values){
+        //     print(k);
+        // }
+        #endregion
+
+        if (dialogueStrings != null && script != null) {
             DialogueRunner dialogueRunner = FindObjectOfType<Yarn.Unity.DialogueRunner>();
-            // dialogueRunner.AddStringTable(script);
-            dialogueRunner.AddStringTable(a);  
-            print(dialogueRunner.CurrentNodeName); 
-            print(dialogueRunner.startNode); 
-            print(dialogueRunner.NodeExists("Shina"));
+            dialogueRunner.AddStringTable(dialogueStrings); 
+            dialogueRunner.Dialogue.AddProgram(script); 
+            // print(dialogueRunner.CurrentNodeName); 
+            // print(dialogueRunner.startNode); 
+            // print(dialogueRunner.NodeExists("Shina"));
         }
         
         // Somehow a null reference when sending in the strings through the method.
